@@ -1,0 +1,15 @@
+add as many comments as you can, same directory
+images/anything pertinent to the project on the ‘docs’ folders
+going to need main.py
+ideally have a main.py that calls a different file so you don’t have to keep changing the name of the file
+
+
+- look at PowerPoints sent
+- todo: get boards blinking but with user input(print to console, take in user input(with AI help)
+- blink Led but prompt user for a speed/frequency
+- take frequency and blink LED with that frequency
+- Hz?
+
+- morse code name
+- read temp to blink
+- connect the two
