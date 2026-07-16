@@ -18,7 +18,7 @@ while True:
     # Convert to temperature in °C
     # Temperature = 27 - (voltage - 0.706) / 0.001721
     temperature = 27 - (voltage - 0.706) / 0.001721
-    
+    # hello
     print(f"Temperature: {temperature:.2f}°C")
     
     time.sleep(1)
