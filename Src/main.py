@@ -1,85 +1,49 @@
-"""
-Pi Pico code to configure Si5351A clock generator for 75MHz output on CLK0
+# main.py  — minimal Si5351 bring-up demo.
+  # Put this next to the vendored si5351.py (both flashed to the Pico root).
+  # Wiring: SDA=GP4 (phys pin 6), SCL=GP5 (phys pin 7).
 
-Si5351 Hardware Connections:
-- Pin 5 (GP3/SCL) <-> SCL
-- Pin 4 (GP2/SDA) <-> SDA
-- Pin 36 (3V3 OUT) <-> VCC
-- Pin 38 (GND) <-> GND
+  from machine import Pin, I2C
+  from si5351 import SI5351
 
-I2C Address: 0x60 (XA and XB grounded or unconnected)
+  # --- board / chip constants ---
+  SDA_PIN, SCL_PIN = 4, 5          # GP4 / GP5  (NOT physical pins 4/5)
+  I2C_ID           = 0             # I2C0 owns GP4/GP5
+  I2C_FREQ         = 400_000
+  SI5351_ADDR      = 0x60
+  XTAL_HZ          = 25_000_000
 
-For 75MHz on CLK0:
-- PLLA = 900MHz (using 25MHz crystal, multiplier=36)
-- CLK0 divider = 12 (integer, 900MHz / 12 = 75MHz)
+  # PLLA: VCO = PLL_MULT * XTAL = 32 * 25 MHz = 800 MHz
+  PLL_MULT, PLL_NUM, PLL_DENOM = 32, 0, 1
 
-The P1 formula for multisynth is: P1 = 128*a + b - 512
-For a=12 (divider), b=0: P1 = 128*12 + 0 - 512 = 1024
-"""
+  # CLK0 target. 800 MHz / 16 = 50 MHz  -> integer divide, so num/denom = 0/1.
+  OUT_DIV, OUT_NUM, OUT_DENOM = 16, 0, 1
 
-from machine import Pin, I2C
-import time
 
-# I2C configuration for Pi Pico
-i2c = I2C(1, scl=Pin(3), sda=Pin(2), freq=400000)
+  def main():
+      i2c = I2C(I2C_ID, sda=Pin(SDA_PIN), scl=Pin(SCL_PIN), freq=I2C_FREQ)
+      
+      # 1. Prove the I2C link BEFORE touching any register.
+      found = i2c.scan()
+      print("I2C scan:", [hex(a) for a in found])
+      if SI5351_ADDR not in found:
+          print("Si5351 NOT found at", hex(SI5351_ADDR),
+                "-> check power, GND, and that SDA/SCL are on GP4/GP5.")
+          return
 
-SI5351_ADDRESS = 0x60
+      # 2. Construct + initialize the chip (powers down all outputs, sets xtal load).
+      si = SI5351(i2c, address=SI5351_ADDR, crystalFreq=XTAL_HZ)
+      si.begin()
 
-def si5351_write(reg, value):
-    """Write a byte to Si5351 register"""
-    try:
-        i2c.writeto_mem(SI5351_ADDRESS, reg, bytes([value]))
-        return True
-    except:
-        return False
+      # 3. PLLA to 800 MHz, then CLK0 divider to hit 50 MHz.
+      si.setupPLL(PLL_MULT, PLL_NUM, PLL_DENOM)
+      si.setupMultisynth(0, OUT_DIV, OUT_NUM, OUT_DENOM, pllsource="A")
 
-def si5351_read(reg):
-    """Read a byte from Si5351 register"""
-    try:
-        return i2c.readfrom_mem(SI5351_ADDRESS, reg, 1)[0]
-    except:
-        return None
+      # 4. Latch the new dividers and turn the outputs on.
+      si.PLLsoftreset()
+      si.enableOutputs(True)
 
-def si5351_init():
-    """Initialize Si5351A"""
-    # Reset the device
-    si5351_write(177, 0xAC)
-    time.sleep_ms(10)
-    
-    # Disable all clock outputs
-    si5351_write(3, 0xFF)
-    
-    # Configure PLLA for 900MHz (with 25MHz crystal)
-    # F_vco = 25MHz * 36 = 900MHz
-    # P1 = 128*36 - 512 = 4096 = 0x1000
-    si5351_write(25, 0x80)   # PLLA source = XTAL, P3 = 128
-    si5351_write(26, 0x10)   # P1[15:8] = 0x10
-    si5351_write(27, 0x00)   # P1[7:0] = 0x00
-    si5351_write(28, 0x00)   # P3[15:8]
-    si5351_write(29, 0x01)   # P3[7:0]
-    si5351_write(30, 0x00)   # P2[15:8]
-    si5351_write(31, 0x00)   # P2[7:0]
+      print("CLK0 should now be 50 MHz. Scope GP-side CLK0 to confirm.")
 
-def configure_clk0_75mhz():
-    """Configure CLK0 to output 75MHz using PLLA at 900MHz"""
-    # Divider = 900MHz / 75MHz = 12
-    # P1 = 128*a + b - 512 = 128*12 + 0 - 512 = 1024 = 0x0400
-    
-    si5351_write(16, 0x04)   # P1[15:8] = 0x04
-    si5351_write(17, 0x00)   # P1[7:0] = 0x00
-    si5351_write(18, 0x00)   # P3[15:8] = 0x00
-    si5351_write(19, 0x80)   # P3[7:0] = 0x80
-    si5351_write(20, 0x00)   # P2[15:8] = 0x00
-    si5351_write(21, 0x00)   # P2[7:0] = 0x00
-    
-    # Clock control register for CLK0 (register 165)
-    # MS0_INT = 1 (integer mode), MS0_PLL = 0 (PLLA)
-    si5351_write(165, 0x40)
-    
-    # Enable CLK0 output
-    si5351_write(3, 0xFE)
 
-# Main execution
-if __name__ == "__main__":
-    si5351_init()
-    configure_clk0_75mhz()
+  if __name__ == "__main__":
+      main()
