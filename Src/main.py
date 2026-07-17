@@ -5,7 +5,7 @@
 from machine import Pin, I2C
 from SI5351 import SI5351
 
-# --- board / chip constants ---
+# --- board / chip constants --- NONE OF THESE CHANGE...(Most doesn't change)
 SDA_PIN, SCL_PIN = 4, 5          # GP4 / GP5  (NOT physical pins 4/5)
 I2C_ID           = 0             # I2C0 owns GP4/GP5
 I2C_FREQ         = 400_000
@@ -15,8 +15,8 @@ XTAL_HZ          = 25_000_000
 # PLLA: VCO = PLL_MULT * XTAL = 32 * 25 MHz = 800 MHz
 PLL_MULT, PLL_NUM, PLL_DENOM = 32, 0, 1
 
-# CLK0 target. 800 MHz / 16 = 50 MHz  -> integer divide, so num/denom = 0/1.
-OUT_DIV, OUT_NUM, OUT_DENOM = 16, 0, 1
+# CLK0 target. 800 MHz / (17 + 1/47) = 47 MHz
+OUT_DIV, OUT_NUM, OUT_DENOM = 17, 1, 47
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
     si = SI5351(i2c, address=SI5351_ADDR, crystalFreq=XTAL_HZ)
     si.begin()
 
-    # 3. PLLA to 800 MHz, then CLK0 divider to hit 50 MHz.
+    # 3. PLLA to 800 MHz, then CLK0 divider to hit 47 MHz.
     si.setupPLL(PLL_MULT, PLL_NUM, PLL_DENOM)
     si.setupMultisynth(0, OUT_DIV, OUT_NUM, OUT_DENOM, pllsource="A")
 
@@ -42,7 +42,7 @@ def main():
     si.PLLsoftreset()
     si.enableOutputs(True)
 
-    print("CLK0 should now be 50 MHz. Scope GP-side CLK0 to confirm.")
+    print("CLK0 should now be 47 MHz. Scope GP-side CLK0 to confirm.")
 
 
 if __name__ == "__main__":

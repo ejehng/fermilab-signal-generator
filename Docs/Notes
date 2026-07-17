@@ -5,14 +5,10 @@ todo: get boards blinking but with user input(print to console, take in user inp
 blink Led but prompt user for a speed/frequency
 take frequency and blink LED with that frequency(Hz)
 
-- other todo: user input, keep below 120, lowest is 50(reject anything else)
-- todo: 
-ID of the board: Si5351 signal generator
-- connected SCL and SDA pins to pins 7 and 6
-- set CLK0 to 75Hz
+- todo: user input, keep below 120, lowest is 50(reject anything else)
+- compare, PL divides
 
 Other:
-morse code name
 - read temp to blink(connect the two)
 videos and ideas on what to do with the picos
 - each of us is responsible for one poster, plan them, poster presentation
