@@ -1,5 +1,5 @@
 """
-Pi Pico code to configure Si5351 clock generator for 75MHz output on CLK0
+Pi Pico code to configure Si5351A clock generator for 75MHz output on CLK0
 
 Si5351 Hardware Connections:
 - Pin 5 (GP3/SCL) <-> SCL
@@ -10,18 +10,19 @@ Si5351 Hardware Connections:
 I2C Address: 0x60 (XA and XB grounded or unconnected)
 
 For 75MHz on CLK0:
-- PLLA = 800MHz (using 25MHz crystal)
-- CLK0 divider = 10.666... (fractional, 32/3)
+- PLLA = 900MHz (using 25MHz crystal, multiplier=36)
+- CLK0 divider = 12 (integer, 900MHz / 12 = 75MHz)
+
+The P1 formula for multisynth is: P1 = 128*a + b - 512
+For a=12 (divider), b=0: P1 = 128*12 + 0 - 512 = 1024
 """
 
 from machine import Pin, I2C
 import time
 
 # I2C configuration for Pi Pico
-# Using I2C1 with SCL on GP3 (Pin 5) and SDA on GP2 (Pin 4)
 i2c = I2C(1, scl=Pin(3), sda=Pin(2), freq=400000)
 
-# Si5351 I2C address (default with XA=0, XB=0)
 SI5351_ADDRESS = 0x60
 
 def si5351_write(reg, value):
@@ -40,18 +41,19 @@ def si5351_read(reg):
         return None
 
 def si5351_init():
-    """Initialize Si5351"""
+    """Initialize Si5351A"""
     # Reset the device
-    si5351_write(177, 0x80)
+    si5351_write(177, 0xAC)
     time.sleep_ms(10)
     
     # Disable all clock outputs
     si5351_write(3, 0xFF)
     
-    # Configure PLLA for 800MHz (with 25MHz crystal)
-    # P1 = 3584 (128*32 - 512), P2 = 0, P3 = 128
+    # Configure PLLA for 900MHz (with 25MHz crystal)
+    # F_vco = 25MHz * 36 = 900MHz
+    # P1 = 128*36 - 512 = 4096 = 0x1000
     si5351_write(25, 0x80)   # PLLA source = XTAL, P3 = 128
-    si5351_write(26, 0x0E)   # P1[15:8] = 0x0E
+    si5351_write(26, 0x10)   # P1[15:8] = 0x10
     si5351_write(27, 0x00)   # P1[7:0] = 0x00
     si5351_write(28, 0x00)   # P3[15:8]
     si5351_write(29, 0x01)   # P3[7:0]
@@ -59,25 +61,23 @@ def si5351_init():
     si5351_write(31, 0x00)   # P2[7:0]
 
 def configure_clk0_75mhz():
-    """Configure CLK0 to output 75MHz using PLLA at 800MHz"""
-    # Divider = 800MHz / 75MHz = 10.666... = 32/3
-    # P1 = 128*a + b - 512 = 128*10 + 85 - 512 = 853
-    # P2 = 85, P3 = 128
+    """Configure CLK0 to output 75MHz using PLLA at 900MHz"""
+    # Divider = 900MHz / 75MHz = 12
+    # P1 = 128*a + b - 512 = 128*12 + 0 - 512 = 1024 = 0x0400
     
-    si5351_write(16, 0x03)   # P1[15:8] = 853 >> 8 = 0x03
-    si5351_write(17, 0x55)   # P1[7:0] = 853 & 0xFF = 0x55
+    si5351_write(16, 0x04)   # P1[15:8] = 0x04
+    si5351_write(17, 0x00)   # P1[7:0] = 0x00
     si5351_write(18, 0x00)   # P3[15:8] = 0x00
     si5351_write(19, 0x80)   # P3[7:0] = 0x80
     si5351_write(20, 0x00)   # P2[15:8] = 0x00
-    si5351_write(21, 0x55)   # P2[7:0] = 0x55
+    si5351_write(21, 0x00)   # P2[7:0] = 0x00
     
-    # Enable CLK0 with PLLA
-    si5351_write(165, 0x00)
+    # Clock control register for CLK0 (register 165)
+    # MS0_INT = 1 (integer mode), MS0_PLL = 0 (PLLA)
+    si5351_write(165, 0x40)
     
     # Enable CLK0 output
-    current = si5351_read(3)
-    if current is not None:
-        si5351_write(3, current & 0xFE)
+    si5351_write(3, 0xFE)
 
 # Main execution
 if __name__ == "__main__":
