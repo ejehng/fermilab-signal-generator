@@ -1,17 +1,19 @@
-add as many comments as you can, same directory
-images/anything pertinent to the project on the ‘docs’ folders
-going to need main.py
-ideally have a main.py that calls a different file so you don’t have to keep changing the name of the file
+going to need main.py(ideally have a main.py that calls a different file so you don’t have to keep changing the name of the file)
+- PowerPoint sent
 
+todo: get boards blinking but with user input(print to console, take in user input
+blink Led but prompt user for a speed/frequency
+take frequency and blink LED with that frequency(Hz)
 
-- look at PowerPoints sent
-- todo: get boards blinking but with user input(print to console, take in user input(with AI help)
-- blink Led but prompt user for a speed/frequency
-- take frequency and blink LED with that frequency
-- Hz?
+- other todo: user input, keep below 120, lowest is 50(reject anything else)
+- todo: 
+ID of the board: Si5351 signal generator
+- connected SCL and SDA pins to pins 7 and 6
+- set CLK0 to 75Hz
 
-- morse code name
-- read temp to blink
-- connect the two
-
-- videos and ideas on what to do with the picos
+Other:
+morse code name
+- read temp to blink(connect the two)
+videos and ideas on what to do with the picos
+- each of us is responsible for one poster, plan them, poster presentation
+- chat on what we did. additional ten slide powerpoint
