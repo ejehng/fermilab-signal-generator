@@ -1,12 +1,14 @@
+07/17/26:
+- todo: user input, keep below 120, lowest is 50(reject anything else)
+- compare, PL divides
+
+
 going to need main.py(ideally have a main.py that calls a different file so you don’t have to keep changing the name of the file)
 - PowerPoint sent
 
 todo: get boards blinking but with user input(print to console, take in user input
 blink Led but prompt user for a speed/frequency
 take frequency and blink LED with that frequency(Hz)
-
-- todo: user input, keep below 120, lowest is 50(reject anything else)
-- compare, PL divides
 
 Other:
 - read temp to blink(connect the two)
