@@ -3,7 +3,7 @@
   # Wiring: SDA=GP4 (phys pin 6), SCL=GP5 (phys pin 7).
 
 from machine import Pin, I2C
-from SI5351 import SI5351
+from SI5351userinput import SI5351
 
 # --- board / chip constants --- NONE OF THESE CHANGE...(Most doesn't change)
 SDA_PIN, SCL_PIN = 4, 5          # GP4 / GP5  (NOT physical pins 4/5)
