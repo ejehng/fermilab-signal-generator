@@ -1,3 +1,45 @@
+07/20/26:
+- WHAT WE CHANGED AND WHAT WE LEARNED(#3)
+- Pi pico PIO(assembly code for the pico, storing registers) is the next thing we r going to talk about(you can go pretty quick, 250 mHz, can be very noisy and slip a bit at higher frequencies)
+- what we're using RF signals for
+- fast/iota 30.5 mHz: rf frequency of the beam in this machine
+- BPM's are given a reference signal that are basically the structure of the beam
+- in booster where you are ramping(36-53), the main injector also ramps but it's 55.6xxx - 536xx(at what point does the board break down...percision of it)
+- 2 onboard ADCs(takes analog and converts to digital)
+    - DAC(takes digital and converts to analog)
+    - no DAC on picos, but there is an onboard ADC
+
+- sketch of what we r working on 
+- block diagram of what we have(draw.io)
+- there's also a draw extension for VScode
+- polish off some of the secondary tasks we haven't gotten to, watch videos, find a python tutorial
+- python.orgn for python experience
+- math that creates the inputted frequency
+
+- want 30.5 mHz--> goes from 36 mHz to 53 mHz over 33 ms
+- limited by I2C(bust bandwidth limit), even if parameters can be fast enough, cant tell the board fast enough
+- limited by hardware
+- RPLL's, PLL
+- all clocks share the same PLL...may lead to fewer solutions that work
+- signal to noise ratios, so that's why it's a higher 900 mHz
+- markdown: can render in github(looks nice when you pull it up on the web browser, text readMe file, markdown, embed this image from my assets folder), embedded pictures
+- study(better resolution from 30.5 vs 30.6)(limits, sig figs, blindly test min and max for this thing)
+
+- GOAL = 30.5 mHz(divide the VCO by the crystal frequency)
+- Output = 25 mHz * PLL multiplier/d/rdiv
+- PLL multiplier = a + b/c
+    - rdiv = 1, or needs to be a power 2
+    - below 500 kHz then no
+- we favor 900 mHz to make it deterministic(would expect the same outcome no matter what is done...)
+    - 900/30.5 = ~28
+    - 30.5 * 28 = 854 mHz(should be within 600-900) = VCO
+    - d = remainder at this point = 28
+    - 854/25 = 34.16 mHz
+    - a = 34, b = 4, c = 28
+
+
+
+
 07/17/26:
 - todo: user input, keep below 120, lowest is 50(reject anything else)
 - compare, PL divides
