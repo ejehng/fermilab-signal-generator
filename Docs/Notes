@@ -1,3 +1,28 @@
+07/21/26:
+- set default configurations, and see if the pico will work if just plugged into the wall(helps test main function)
+- acknowledgement: set setting down, echo back actual setting
+- calc params, set(), CK params(), echo back()
+- uint16
+    - int = integers(8, 16, 32, 64)
+    - int8 = -128 to 127
+    - uint8 = 256
+- floats and doubles
+    - (3F8)e(00000)m
+- always want to return what you actually did
+- object oriented programming
+1) task from yesterday(PLL math)
+2) work on user input(clean up main file)    
+    2) keep asking for frequency until quit command(q), return(refactor out) from main
+    2) get inputs for multiple clocks(0, 1, 2)
+    2) while loop should be in main(prompt user, calls function called prompt user)
+
+BELOW 5 mHz for my thing
+- multithreading
+- fork into a new object(copying myself)
+- keep main function small
+- visual interface...min, max, prompting...
+
+
 07/20/26:
 - WHAT WE CHANGED AND WHAT WE LEARNED(#3)
 - Pi pico PIO(assembly code for the pico, storing registers) is the next thing we r going to talk about(you can go pretty quick, 250 mHz, can be very noisy and slip a bit at higher frequencies)
