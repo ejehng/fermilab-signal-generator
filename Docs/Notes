@@ -1,3 +1,20 @@
+07/27/26:
+- 8-160 MHz clock, GPIO 1
+- sleep commands between on off(10 times a sec)
+- bridge signal gap missing
+- pwm, wait time
+a) user configurable, fleshed out
+b) main dfile small
+c) 10 hz on small
+    i) simultaneously 30.25 mhz clock
+d) check bounds every input
+e) freq before it breaks
+f) bit banging
+- prototyping phase
+- bluetooth wifi
+- poe
+- real digitizer
+
 07/21/26:
 - set default configurations, and see if the pico will work if just plugged into the wall(helps test main function)
 - acknowledgement: set setting down, echo back actual setting
