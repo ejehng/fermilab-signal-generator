@@ -332,4 +332,27 @@ class SI5351:
         assert self.initialized == True, "Error Device not initialized"
         self.write8( SI5351_REGISTER_3_OUTPUT_ENABLE_CONTROL, mask ^ 0xFF)
         
-        return 
+        return
+    
+    def get_frequency_from_user(self):
+        """Get frequency input from user in MHz. Returns None if user enters 'q' to quit."""
+        print("\n" + "="*50)
+        print("        SI5351 Frequency Generator")
+        print("="*50)
+        print("Valid frequency range: 50.0 MHz to 120.0 MHz")
+        print("(50 MHz ≤ frequency ≤ 120 MHz)")
+        print("Available outputs: 0, 1, 2")
+        print("Enter 'q' to quit")
+        print("-"*50)
+        
+        # Get output number
+        while True:
+            try:
+                output_str = input("Select output (0, 1, or 2): ")
+                if output_str.lower() == 'q':
+                    return None
+                output = int(output_str)
+                if output in [0, 1, 2]:
+                    break
+                else:
+                    print

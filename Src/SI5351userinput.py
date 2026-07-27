@@ -1,28 +1,28 @@
 from machine import I2C
-import math
+from SI5351 import SI5351
 
-SI5351_REGISTER_0_DEVICE_STATUS                       = 0
-SI5351_REGISTER_1_INTERRUPT_STATUS_STICKY             = 1
-SI5351_REGISTER_2_INTERRUPT_STATUS_MASK               = 2
-SI5351_REGISTER_3_OUTPUT_ENABLE_CONTROL               = 3
-SI5351_REGISTER_9_OEB_PIN_ENABLE_CONTROL              = 9
-SI5351_REGISTER_15_PLL_INPUT_SOURCE                   = 15
-SI5351_REGISTER_16_CLK0_CONTROL                       = 16
-SI5351_REGISTER_17_CLK1_CONTROL                       = 17
-SI5351_REGISTER_18_CLK2_CONTROL                       = 18
-SI5351_REGISTER_19_CLK3_CONTROL                       = 19
-SI5351_REGISTER_20_CLK4_CONTROL                       = 20
-SI5351_REGISTER_21_CLK5_CONTROL                       = 21
-SI5351_REGISTER_22_CLK6_CONTROL                       = 22
-SI5351_REGISTER_23_CLK7_CONTROL                       = 23
-SI5351_REGISTER_24_CLK3_0_DISABLE_STATE               = 24
-SI5351_REGISTER_25_CLK7_4_DISABLE_STATE               = 25
-SI5351_REGISTER_42_MULTISYNTH0_PARAMETERS_1           = 42
-SI5351_REGISTER_43_MULTISYNTH0_PARAMETERS_2           = 43
-SI5351_REGISTER_44_MULTISYNTH0_PARAMETERS_3           = 44
-SI5351_REGISTER_45_MULTISYNTH0_PARAMETERS_4           = 45
-SI5351_REGISTER_46_MULTISYNTH0_PARAMETERS_5           = 46
-SI5351_REGISTER_47_MULTISYNTH0_PARAMETERS_6           = 47
+# Example usage
+if __name__ == "__main__":
+    # Initialize I2C
+    i2c = I2C(0, scl=5, sda=4, freq=100000)
+    
+    # Create SI5351 object
+    si = SI5351(i2c)
+    
+    # Initialize the chip
+    si.begin()
+    
+    print("\nSI5351 initialized successfully")
+    print(f"Crystal frequency: {si.crystalFreq/1000000:.1f} MHz")
+    print("\nSet frequency for outputs 0, 1, or 2")
+    print("Valid range: 50-120 MHz")
+    print("Enter 'q' at any prompt to quit")
+    
+    while True:
+        result = si.get_frequency_from_user()
+        if result is None:
+            break
+    
 SI5351_REGISTER_48_MULTISYNTH0_PARAMETERS_7           = 48
 SI5351_REGISTER_49_MULTISYNTH0_PARAMETERS_8           = 49
 SI5351_REGISTER_50_MULTISYNTH1_PARAMETERS_1           = 50
@@ -397,26 +397,30 @@ class SI5351:
         return True
 
     def get_frequency_from_user(self):
-        """Get frequency input from user in MHz"""
+        """Get frequency input from user in MHz. Returns None if user enters 'q' to quit."""
         print("\n" + "="*50)
         print("        SI5351 Frequency Generator")
         print("="*50)
         print("Valid frequency range: 50.0 MHz to 120.0 MHz")
         print("(50 MHz ≤ frequency ≤ 120 MHz)")
         print("Available outputs: 0, 1, 2")
+        print("Enter 'q' to quit")
         print("-"*50)
         
         # Get output number
         while True:
             try:
                 output_str = input("Select output (0, 1, or 2): ")
+                # Check if user wants to quit
+                if output_str.lower() == 'q':
+                    return None
                 output = int(output_str)
                 if output in [0, 1, 2]:
                     break
                 else:
                     print("Please enter 0, 1, or 2")
             except ValueError:
-                print("Please enter a valid number")
+                print("Please enter a valid number or 'q' to quit")
         
         # Get frequency in MHz
         print("\nEnter frequency in MHz (e.g., 100 for 100 MHz)")
@@ -425,6 +429,9 @@ class SI5351:
         while True:
             try:
                 freq_str = input("Frequency (MHz): ")
+                # Check if user wants to quit
+                if freq_str.lower() == 'q':
+                    return None
                 freq_mhz = float(freq_str)
                 
                 # Check if frequency is within valid range (50 <= freq <= 120)
@@ -445,7 +452,7 @@ class SI5351:
                     # Frequency is within valid range
                     break
             except ValueError:
-                print(" Please enter a valid number (e.g., 100 or 75.5)")
+                print(" Please enter a valid number (e.g., 100 or 75.5) or 'q' to quit")
         
         print("-"*50)
         print(f"Output: {output}, Frequency: {freq_mhz:.3f} MHz")

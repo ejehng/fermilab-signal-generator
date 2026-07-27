@@ -33,7 +33,7 @@ BELOW 5 mHz for my thing
 - 2 onboard ADCs(takes analog and converts to digital)
     - DAC(takes digital and converts to analog)
     - no DAC on picos, but there is an onboard ADC
-
+u
 - sketch of what we r working on 
 - block diagram of what we have(draw.io)
 - there's also a draw extension for VScode
