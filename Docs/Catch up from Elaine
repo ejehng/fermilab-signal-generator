@@ -1,0 +1,19 @@
+- loop the prompt (as soon as you set a freq it asks for another one (and you can also set an input like ‘q’ for quit))
+- added input validation (check if it’s in a certain range, if not then goes back to the next iteration of the loop and prompts for new freq)
+- refactored stuff out of main so the main function is relatively small and made of smaller functions
+- added try/catches (try: … except: ) (basically a second way of validating the input)
+
+This is like pretty much all I’ve already done up to this point 
+
+New things to do (not necessarily to all be done tn, just a Brain dump of things I thought abt/heard might be nice/etc)
+- figure out min/max
+- run automated test to test a bunch of inputs and see what happens (if the freq output is clean, what freq is recorded, the parameters returned by the solve function, etc)
+- can start playing with bitbanging (just brute forcing low frequencies by toggling gpio pins high and low w a small break in between)
+- sketch a diagram of the board
+- take pictures of board and oscilloscope
+- add readme
+- visual interface of main 
+
+Then Bobby and I talked abt couple things and now have more tasks to work on:
+- creating two ways to make signal generators for low frequencies (8-10,000,000 hz) and really low frequencies (1-8 hz) on a new file
+- integrating the stuff from that file into the main file to create one ultimate signal generator
