@@ -1,3 +1,14 @@
+07/28/26:
+- COME UP WITH QUESTIONS FOR BOBBY TOMORROW 
+a) get lower freq working
+b) test 3-7 hz
+c) graph
+- build an abstract
+- presentation will be about 10 min, comes out from a poster
+- can talk about how the PLL works
+- scheduler: multiple programs running at once, contending for cores, tells who to go
+- microcontroller may struggle w that: 1&2 hz, manually time it
+
 07/27/26:
 - 8-160 MHz clock, GPIO 1
 - sleep commands between on off(10 times a sec)

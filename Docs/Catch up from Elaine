@@ -3,7 +3,6 @@
 - refactored stuff out of main so the main function is relatively small and made of smaller functions
 - added try/catches (try: … except: ) (basically a second way of validating the input)
 
-This is like pretty much all I’ve already done up to this point 
 
 New things to do (not necessarily to all be done tn, just a Brain dump of things I thought abt/heard might be nice/etc)
 - figure out min/max
