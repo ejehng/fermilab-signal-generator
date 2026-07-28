@@ -10,10 +10,15 @@ c) 10 hz on small
 d) check bounds every input
 e) freq before it breaks
 f) bit banging
+g) block diagram for board and code
 - prototyping phase
 - bluetooth wifi
+- uml, dependency tree, inheritance
 - poe
 - real digitizer
+- solver favors rdiv of 1 w 900 mhz
+- look at how pll solver works
+- user interface
 
 07/21/26:
 - set default configurations, and see if the pico will work if just plugged into the wall(helps test main function)
