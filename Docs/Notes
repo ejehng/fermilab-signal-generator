@@ -1,5 +1,5 @@
 07/29/26:
-- Elaine's was unstable/weird at low frequencies(10 Hz, tried 10 KHz)
+- Frequency output was unstable/weird at lower values(10 Hz, tried 10 KHz)
 - pwm library: 20 mv vs 0.6 v at the least(peak to peak on generic pin)
 - problems: wrong pin address, too low vp-p(20 mv) and then too high vp-p(4v)
 and scaling due to channel 1 being off(?) RF is 0.6V, 2V is actually because 4V 
