@@ -1,3 +1,7 @@
+07/30/26:
+* https://www.ti.com/lit/an/swra029/swra029.pdf
+
+
 07/29/26:
 - Frequency output was unstable/weird at lower values(10 Hz, tried 10 KHz)
 - pwm library: 20 mv vs 0.6 v at the least(peak to peak on generic pin)
